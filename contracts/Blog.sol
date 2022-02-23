@@ -1,15 +1,17 @@
 // contracts/Blog.sol
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
-
 import "hardhat/console.sol";
-import "@openzeppelin/contract/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Blog {
     string public name;
     address public owner;
 
-    using Counters for Counters.Counters;
+// Using Counter library for type (struct);
+// Counters.Counter is a struct
+    
+    using Counters for Counters.Counter;
     Counters.Counter private _postIds;
 
     struct Post {
@@ -28,7 +30,7 @@ contract Blog {
     /* i.e. we can create listeners for events in the client and also use them in The Graph  */
 
     event PostCreated(uint id, string title, string postHash);
-    event postUpdated(uint id, string title, string hash, bool published);
+    event PostUpdated(uint id, string title, string postHash, bool published);
 
     /* when the blog is deployed, give it a name */
     /* also set the creator as the owner of the contract */
@@ -50,13 +52,13 @@ contract Blog {
     }
 
     /* fetches an individual post by the content hash */
-    function fetchPost (string memory _postHash) public view returns (Post memory){
-        return hashToPost[_postHash];
+    function fetchPost (string memory postHash) public view returns (Post memory){
+        return hashToPost[postHash];
     }
 
     // create a new post
 
-    function createPost (string memory title, string memory _postHash) public onlyOwner{
+    function createPost (string memory title, string memory postHash) public onlyOwner{
         _postIds.increment();
 
         uint postId = _postIds.current();
@@ -64,22 +66,21 @@ contract Blog {
         post.id = postId;
         post.title = title;
         post.published = true;
-        post.content = _postHash;
-        hashToPost[_postHash] = post;
-        emit PostCreated(postId, title, _postHash);
+        post.content = postHash;
+        hashToPost[postHash] = post;
+        emit PostCreated(postId, title, postHash);
     }
 
   /* updates an existing post */
-
-    function updatePost(uint postId, string memory title, string memory _posthash, bool published){
+    function updatePost(uint postId, string memory title, string memory postHash, bool published) public onlyOwner {
         Post storage post = idToPost[postId];
         post.title = title;
         post.published = published;
-        post.content = _postHash;
+        post.content = postHash;
         idToPost[postId] = post;
-        hashToPost[_postHash] = post;
+        hashToPost[postHash] = post;
 
-        emit PostUpdated(post.id, title, _postHash, published);
+        emit PostUpdated(post.id, title, postHash, published);
     }
 
        /* fetches all posts */
