@@ -1,6 +1,8 @@
-# Basic Sample Hardhat Project
+# Web3 Blog using ethersjs and Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+# Hardhat Documentation 
+
+This project demonstrates ethersjs and Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
 
 Try running some of the following tasks:
 
