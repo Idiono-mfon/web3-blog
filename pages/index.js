@@ -1,6 +1,6 @@
 /* pages/index.js */
-import { css } from "@emotion/css";
-import { useContext } from "react";
+import { css, cx } from "@emotion/css";
+import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import Link from "next/link";
@@ -11,12 +11,15 @@ import { contractAddress, ownerAddress } from "../config";
 
 /* import Application Binary Interface (ABI) */
 import Blog from "../artifacts/contracts/Blog.sol/Blog.json";
+import Spinner from "../components/Spinner";
 
 export default function Home(props) {
   /* posts are fetched server side and passed in as props */
   /* see getServerSideProps */
   const { posts } = props;
   const account = useContext(AccountContext);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   async function navigate() {
@@ -25,12 +28,14 @@ export default function Home(props) {
 
   return (
     <div>
+      {isLoading && <Spinner />}
+
       <div className={postList}>
         {
           /* map over the posts array and render a button with the post title */
           posts.map((post, index) => (
             <Link href={`/post/${post[2]}`} key={index}>
-              <a>
+              <a onClick={() => setIsLoading(true)}>
                 <div className={linkStyle}>
                   <p className={postTitle}>{post[1]}</p>
                   <div className={arrowContainer}>

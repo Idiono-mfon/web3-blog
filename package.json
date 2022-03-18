@@ -2,10 +2,12 @@
   "name": "web3-blog",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "env-cmd -f .env.test next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "compile": "env-cmd -f .env.test npx hardhat compile",
+    "deploy": "env-cmd -f .env.test npx hardhat run scripts/deploy.js --network mumbai"
   },
   "dependencies": {
     "@emotion/css": "^11.7.1",
@@ -14,6 +16,7 @@
     "@walletconnect/web3-provider": "^1.7.1",
     "chai": "^4.3.6",
     "easymde": "^2.16.1",
+    "env-cmd": "^10.1.0",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.4",
     "hardhat": "^2.8.4",

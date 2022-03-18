@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }) {
 
   async function getWeb3Modal() {
     const web3Modal = new Web3Modal({
-      network: "mainnet",
+      network: "mainnet", //this is optional
       cacheProvider: false,
       providerOptions: {
         walletconnect: {
@@ -35,12 +35,12 @@ function MyApp({ Component, pageProps }) {
   async function connect() {
     try {
       const web3Modal = await getWeb3Modal();
-      const connection = await web3Modal().connect();
+      const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
       const accounts = await provider.listAccounts();
       setAccount(accounts[0]);
     } catch (error) {
-      console.log("error:", err);
+      console.log("error:", error);
     }
   }
 
@@ -56,8 +56,8 @@ function MyApp({ Component, pageProps }) {
           <Link href="/">
             <a>
               <div className={titleContainer}>
-                <h2 className={title}>Full Stack</h2>
-                <p className={description}>WEB3</p>
+                <h2 className={title}>Web3Blog</h2>
+                {/* <p className={description}>WEB3</p> */}
               </div>
             </a>
           </Link>

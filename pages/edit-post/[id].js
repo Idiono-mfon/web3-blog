@@ -21,6 +21,7 @@ const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
 export default function Post() {
   const [post, setPost] = useState(null);
   const [editing, setEditing] = useState(true);
+  const [isPublishing, setIsPublishing] = useState(false);
   const router = useRouter();
   const { id } = router.query;
 
@@ -70,6 +71,7 @@ export default function Post() {
   }
 
   async function updatePost() {
+    setIsPublishing(true);
     const hash = await savePostToIpfs();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -100,7 +102,7 @@ export default function Post() {
             onChange={(value) => setPost({ ...post, content: value })}
           />
           <button className={button} onClick={updatePost}>
-            Update post
+            {isPublishing ? "Update post" : "Update Post"}
           </button>
         </div>
       )}

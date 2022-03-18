@@ -11,6 +11,7 @@ import { contractAddress } from "../config";
 import Blog from "../artifacts/contracts/Blog.sol/Blog.json";
 
 /* define the ipfs endpoint */
+/* Create an instance of the client */
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
 /* configure the markdown editor to be client-side import */
@@ -25,6 +26,8 @@ function CreatePost() {
   const [post, setPost] = useState(initialState);
   const [image, setImage] = useState(null);
   const [loaded, setLoaded] = useState(false);
+
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const fileRef = useRef(null);
   const { title, content } = post;
@@ -44,6 +47,7 @@ function CreatePost() {
   async function createNewPost() {
     /* saves post to ipfs then anchors to smart contract */
     if (!title || !content) return;
+    setIsPublishing(true);
     const hash = await savePostToIpfs();
     await savePost(hash);
     router.push(`/`);
@@ -53,6 +57,7 @@ function CreatePost() {
     /* save post metadata to ipfs */
     /**second time uploading post to IPFS */
     try {
+      /* upload the file */
       const added = await client.add(JSON.stringify(post));
       return added.path;
     } catch (err) {
@@ -71,6 +76,7 @@ function CreatePost() {
         const val = await contract.createPost(post.title, hash);
         /* optional - wait for transaction to be confirmed before rerouting */
         /* await provider.waitForTransaction(val.hash) */
+        await provider.waitForTransaction(val.hash);
         console.log("val: ", val);
       } catch (err) {
         console.log("Error: ", err);
@@ -113,7 +119,7 @@ function CreatePost() {
       {loaded && (
         <>
           <button className={button} type="button" onClick={createNewPost}>
-            Publish
+            {isPublishing ? "Submitting..." : "Publish"}
           </button>
           <button onClick={triggerOnChange} className={button}>
             Add cover image
